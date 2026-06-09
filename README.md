@@ -111,6 +111,11 @@ Engine code worth knowing about:
 * Episode-level resolution beyond show fallback (RSS GUID matching)
 * iOS app sharing the same schema repository
 
+## Support
+
+Pod Dispatcher is free and open source, with no ads or tracking. If it saved
+you a few taps, [buy me a coffee](https://buymeacoffee.com/natepelzel) ☕
+
 ## License
 
 [Apache-2.0](LICENSE)
