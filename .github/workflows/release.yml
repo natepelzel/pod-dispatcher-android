@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build signed APK & publish release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Decode signing keystore
+        run: echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+      - name: Build signed release APK
+        run: ./gradlew :app:assembleRelease
+        env:
+          POD_KEYSTORE_FILE: ${{ runner.temp }}/release.keystore
+          POD_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          POD_KEY_ALIAS: pod-dispatcher
+      - name: Publish GitHub release
+        run: |
+          cp app/build/outputs/apk/release/app-release.apk "pod-dispatcher-${GITHUB_REF_NAME}.apk"
+          gh release create "$GITHUB_REF_NAME" "pod-dispatcher-${GITHUB_REF_NAME}.apk" --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}

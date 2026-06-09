@@ -1,0 +1,21 @@
+# Gradle
+.gradle/
+build/
+.kotlin/
+
+# Local config
+local.properties
+
+# IDE
+.idea/
+*.iml
+captures/
+.cxx/
+
+# Python
+__pycache__/
+.venv/
+
+# Signing — release keys live outside the repo, never commit them
+*.keystore
+*.jks

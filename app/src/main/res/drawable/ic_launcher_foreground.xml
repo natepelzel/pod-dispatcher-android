@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Simple "redirect arrow over sound waves" mark -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M40,40 L62,40 L62,34 L74,44 L62,54 L62,48 L40,48 Z" />
+    <path
+        android:strokeColor="#7C8CF8"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:pathData="M38,62 C44,56 64,56 70,62" />
+    <path
+        android:strokeColor="#7C8CF8"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:pathData="M42,70 C47,65 61,65 66,70" />
+</vector>

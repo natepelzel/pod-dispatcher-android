@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pod Dispatcher</string>
+    <string name="choose_target">Open podcast links with:</string>
+    <string name="no_targets">No target apps available. Refresh schemas or check the bundled schema files.</string>
+    <string name="open_by_default_settings">Configure link handling…</string>
+    <string name="install">Install</string>
+    <string name="refresh_ok">Schemas updated</string>
+    <string name="refresh_failed">Schema refresh failed</string>
+    <string name="error_target_not_installed">The target podcast app is not installed</string>
+    <string name="error_no_link_in_share">No link found in the shared text</string>
+    <string name="error_dispatch_loop">Link loops back to Pod Dispatcher — check the target schema\'s package</string>
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.PodDispatcher" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- DispatchActivity renders nothing; it resolves the link and forwards it. -->
+    <style name="Theme.PodDispatcher.Translucent">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+</resources>
