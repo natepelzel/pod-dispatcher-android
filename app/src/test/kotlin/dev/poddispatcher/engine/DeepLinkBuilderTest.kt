@@ -63,6 +63,27 @@ class DeepLinkBuilderTest {
     }
 
     @Test
+    fun `extra target-resolved variables render in link templates`() {
+        val target = TargetConfig(
+            links = TargetLinks(show = listOf("https://open.spotify.com/show/{spotifyShowId}")),
+        )
+        val resolved = ResolvedLink(
+            level = LinkLevel.SHOW,
+            feedUrl = "https://x.example/feed",
+            itunesId = "1200361736",
+        )
+        assertTrue(DeepLinkBuilder.candidates(target, resolved).isEmpty())
+        assertEquals(
+            listOf("https://open.spotify.com/show/3IM0lmZxpFAY7CwMuv9H4g"),
+            DeepLinkBuilder.candidates(
+                target,
+                resolved,
+                mapOf("spotifyShowId" to "3IM0lmZxpFAY7CwMuv9H4g"),
+            ),
+        )
+    }
+
+    @Test
     fun `episode template renders when variables are available`() {
         val target = TargetConfig(
             links = TargetLinks(

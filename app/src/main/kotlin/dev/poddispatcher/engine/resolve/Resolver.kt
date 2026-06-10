@@ -4,7 +4,7 @@ import dev.poddispatcher.engine.ResolvedLink
 import dev.poddispatcher.engine.SourceMatch
 import dev.poddispatcher.model.ResolveConfig
 
-const val USER_AGENT = "PodDispatcher/0.1 (https://github.com/pod-dispatcher)"
+const val USER_AGENT = "PodDispatcher/0.1 (https://github.com/natepelzel/pod-dispatcher-android)"
 
 /**
  * Turns a matched incoming link into a canonical [ResolvedLink]. One

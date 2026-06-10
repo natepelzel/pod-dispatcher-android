@@ -12,8 +12,13 @@ object DeepLinkBuilder {
      * (no episode templates, or missing variables) and the target allows it,
      * show links are used as the graceful fallback.
      */
-    fun candidates(target: TargetConfig, resolved: ResolvedLink): List<String> {
-        val vars = resolved.toVars()
+    fun candidates(
+        target: TargetConfig,
+        resolved: ResolvedLink,
+        /** Target-side resolved variables (see TargetVarsResolver). */
+        extraVars: Map<String, String> = emptyMap(),
+    ): List<String> {
+        val vars = resolved.toVars() + extraVars
         val out = mutableListOf<String>()
 
         if (resolved.level == LinkLevel.EPISODE) {

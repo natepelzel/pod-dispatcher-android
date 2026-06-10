@@ -2,6 +2,7 @@ package dev.poddispatcher.engine
 
 import dev.poddispatcher.Prefs
 import dev.poddispatcher.engine.resolve.Resolver
+import dev.poddispatcher.engine.resolve.TargetVarsResolver
 
 /**
  * End-to-end pipeline: incoming URL → source match → canonical resolution →
@@ -11,6 +12,7 @@ class Dispatcher(
     private val repository: SchemaRepository,
     resolvers: List<Resolver>,
     private val prefs: Prefs,
+    private val targetVarsResolver: TargetVarsResolver? = null,
 ) {
     private val resolversByType = resolvers.associateBy { it.type }
 
@@ -39,7 +41,13 @@ class Dispatcher(
             ?: repository.androidTargets().firstOrNull()
             ?: return Result.Failure("No target app configured")
 
-        val candidates = DeepLinkBuilder.candidates(targetSchema.target!!, resolved)
+        // Targets keyed by a proprietary catalog id (Spotify, …) declare a
+        // resolve block that mints extra variables at dispatch time.
+        val extraVars = targetSchema.target!!.resolve
+            ?.let { targetVarsResolver?.resolve(it, resolved.toVars()) }
+            ?: emptyMap()
+
+        val candidates = DeepLinkBuilder.candidates(targetSchema.target, resolved, extraVars)
         if (candidates.isEmpty()) {
             return Result.Failure("No deep link available for ${targetSchema.name}")
         }

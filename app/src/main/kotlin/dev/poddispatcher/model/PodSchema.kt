@@ -81,6 +81,15 @@ data class ResolveConfig(
     val feedUrl: List<ScrapeStep> = emptyList(),
     /** Scrape resolver only: optional iTunes id extraction steps. */
     val itunesId: List<ScrapeStep> = emptyList(),
+    /**
+     * Scrape resolver only: optional episode enclosure (audio URL), title and
+     * GUID extraction steps. Consulted only when an episode-level pattern
+     * matched; extracting at least one of them keeps the resolution at
+     * episode level, otherwise it degrades to show level.
+     */
+    val episodeUrl: List<ScrapeStep> = emptyList(),
+    val episodeTitle: List<ScrapeStep> = emptyList(),
+    val episodeGuid: List<ScrapeStep> = emptyList(),
 )
 
 /** Exactly one of [css] or [jsonld] is set (enforced by the JSON Schema). */
@@ -99,8 +108,24 @@ data class ScrapeStep(
 @Serializable
 data class TargetConfig(
     val android: AndroidTarget? = null,
+    val resolve: TargetResolve? = null,
     val links: TargetLinks,
     val episodeFallback: EpisodeFallback = EpisodeFallback.SHOW,
+)
+
+/**
+ * Optional target-side resolution: scrapes a page reachable from the
+ * canonical identity to mint extra link-template variables (e.g. a Spotify
+ * show id that can't be derived from the RSS feed).
+ */
+@Serializable
+data class TargetResolve(
+    /** Only "scrape" for now. */
+    val type: String,
+    /** Template for the page to fetch, over the canonical variables. */
+    val url: String,
+    /** Variable name → extraction steps tried in order. */
+    val vars: Map<String, List<ScrapeStep>> = emptyMap(),
 )
 
 @Serializable

@@ -76,6 +76,65 @@ class ScrapeResolverTest {
         assertEquals("/page", server.takeRequest().path)
     }
 
+    /** Mirrors the markup of a podcastaddict.com episode page. */
+    private val episodePageHtml = """
+        <html><head>
+          <link rel="alternate" type="application/rss+xml" title="UnJustified"
+                href="https://feeds.simplecast.com/4v0m0WEY"/>
+          <script type="application/ld+json">
+          [{"@context":"https://schema.org","@type":"PodcastEpisode",
+            "name":"UnJustified - Zero Intelligence",
+            "associatedMedia":{"@type":"MediaObject","contentUrl":"https://cdn.example.com/ep.mp3"},
+            "partOfSeries":{"@type":"PodcastSeries","name":"UnJustified"}},
+           {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[]}]
+          </script>
+        </head></html>
+    """.trimIndent()
+
+    private val episodeAwareConfig = ResolveConfig(
+        type = "scrape",
+        feedUrl = listOf(ScrapeStep(css = "link[type=\"application/rss+xml\"]")),
+        episodeUrl = listOf(ScrapeStep(jsonld = "associatedMedia.contentUrl")),
+        episodeTitle = listOf(ScrapeStep(jsonld = "name")),
+    )
+
+    @Test
+    fun `episode match extracts episode info from the page`() = runTest {
+        server.enqueue(MockResponse().setBody(episodePageHtml))
+        val match = SourceMatch(schema, LinkLevel.EPISODE, mapOf("episodeId" to "225537598"))
+
+        val resolved = resolver.resolve(episodeAwareConfig, match, server.url("/x/episode/225537598").toString())
+
+        assertEquals(LinkLevel.EPISODE, resolved!!.level)
+        assertEquals("https://feeds.simplecast.com/4v0m0WEY", resolved.feedUrl)
+        assertEquals("https://cdn.example.com/ep.mp3", resolved.episodeUrl)
+        assertEquals("UnJustified - Zero Intelligence", resolved.episodeTitle)
+    }
+
+    @Test
+    fun `episode match degrades to show level when no episode step matches`() = runTest {
+        server.enqueue(MockResponse().setBody(podnewsStyleHtml)) // no episode JSON-LD
+        val match = SourceMatch(schema, LinkLevel.EPISODE, mapOf("episodeId" to "1"))
+
+        val resolved = resolver.resolve(episodeAwareConfig, match, server.url("/x/episode/1").toString())
+
+        assertEquals(LinkLevel.SHOW, resolved!!.level)
+        assertEquals("https://feeds.simplecast.com/Sl5CSM3S", resolved.feedUrl)
+        assertEquals(null, resolved.episodeUrl)
+    }
+
+    @Test
+    fun `show match never consults the episode steps`() = runTest {
+        server.enqueue(MockResponse().setBody(episodePageHtml))
+        val match = SourceMatch(schema, LinkLevel.SHOW, emptyMap())
+
+        val resolved = resolver.resolve(episodeAwareConfig, match, server.url("/podcast/x/1").toString())
+
+        assertEquals(LinkLevel.SHOW, resolved!!.level)
+        assertEquals(null, resolved.episodeUrl)
+        assertEquals(null, resolved.episodeTitle)
+    }
+
     @Test
     fun `jsonld step extracts dotted path`() = runTest {
         server.enqueue(

@@ -3,10 +3,12 @@ package dev.poddispatcher
 import android.content.Context
 import dev.poddispatcher.engine.Dispatcher
 import dev.poddispatcher.engine.SchemaRepository
+import dev.poddispatcher.engine.resolve.DirectResolver
 import dev.poddispatcher.engine.resolve.ItunesApiResolver
 import dev.poddispatcher.engine.resolve.PodcastIndexResolver
 import dev.poddispatcher.engine.resolve.Resolver
 import dev.poddispatcher.engine.resolve.ScrapeResolver
+import dev.poddispatcher.engine.resolve.TargetVarsResolver
 import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
 
@@ -31,9 +33,10 @@ object Graph {
     private fun resolvers(): List<Resolver> = listOf(
         ItunesApiResolver(httpClient),
         ScrapeResolver(httpClient),
+        DirectResolver(),
         PodcastIndexResolver(),
     )
 
     fun dispatcher(context: Context): Dispatcher =
-        Dispatcher(repository(context), resolvers(), Prefs(context))
+        Dispatcher(repository(context), resolvers(), Prefs(context), TargetVarsResolver(httpClient))
 }

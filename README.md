@@ -40,14 +40,15 @@ Currently shipped schemas:
 
 | Schema | Role | Notes |
 | ------ | ---- | ----- |
-| [`apple-podcasts`](schemas/apple-podcasts.yml) | source | show + episode links, resolved via the iTunes Lookup API |
-| [`spotify`](schemas/spotify.yml) | source | show links, resolved by scraping the Podnews directory |
+| [`apple-podcasts`](schemas/apple-podcasts.yml) | source + target | show + episode links via the iTunes Lookup API; target is iOS-only |
+| [`spotify`](schemas/spotify.yml) | source + target | both directions resolved through the Podnews directory |
 | [`pocket-casts`](schemas/pocket-casts.yml) | source + target | `pca.st/itunes/…` in, `pktc://subscribe/…` out |
-| [`podcast-addict`](schemas/podcast-addict.yml) | target | show + **episode** deep links |
+| [`podcast-addict`](schemas/podcast-addict.yml) | source + target | show + **episode** share pages in; show + episode deep links out |
 | [`overcast`](schemas/overcast.yml) | source + target | target is iOS-only (no Android package) |
 | [`castro`](schemas/castro.yml) | source + target | target is iOS-only |
 | [`castbox`](schemas/castbox.yml) | source + target | Apple-id-keyed links |
-| [`antennapod`](schemas/antennapod.yml) | target | `antennapod.org/deeplink/subscribe` |
+| [`antennapod`](schemas/antennapod.yml) | source + target | subscribe deeplinks both ways (feed-carrying) |
+| [`subscribe-on-android`](schemas/subscribe-on-android.yml) | source | publisher subscribe links that carry the feed URL |
 | [`youtube-music`](schemas/youtube-music.yml) | target | base64url feed deep link |
 | [`player-fm`](schemas/player-fm.yml) | target | feed-keyed subscribe link |
 | [`podbean`](schemas/podbean.yml) | target | Apple-id-keyed |
